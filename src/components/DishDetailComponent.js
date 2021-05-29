@@ -3,6 +3,8 @@ import { Card, CardImg, CardText, CardBody, CardTitle, Breadcrumb, BreadcrumbIte
 import {Link} from 'react-router-dom';
 import { Control, LocalForm, Errors } from 'react-redux-form';
 import {Loading} from "./LoadingComponent";
+import {baseUrl} from "../shared/baseUrl";
+import { FadeTransform, Fade, Stagger } from 'react-animation-components';
 
 const maxLength = (len) => (val) => !(val) || (val.length <= len);
 const minLength = (len) => (val) => (val) && (val.length >= len);
@@ -26,14 +28,14 @@ class CommentForm extends Component {
 
   handleSubmit(values) {
       this.toggleModal();
-      this.props.addComment(this.props.dishId, values.rating, values.author, values.comment);
+      this.props.postComment(this.props.dishId, values.rating, values.author, values.comment);
   }
 
   render() {
     return (
       <>
         <Button outline onClick={this.toggleModal}>
-          <i className="fa fa-pencil fa-lg"></i> Submit Comment
+          <i className="fa fa-pencil fa-lg" /> Submit Comment
         </Button>
         <Modal isOpen={this.state.isModalOpen} toggle={this.toggleModal}>
           <ModalHeader toggle={this.toggleModal}>Submit comment</ModalHeader>
@@ -102,24 +104,26 @@ class CommentForm extends Component {
 }
 
 
-function RenderComments({comments, addComment, dishId}){
+function RenderComments({comments, postComment, dishId}){
     if (comments != null) {
-      const comm = comments.map((comment) => {
-        return (
-                <li key={comment.id}>
-                  <p>{comment.comment}</p>
-                  <p>-- {comment.author}, {new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}</p>
-                </li>
-        );
-      });
-
       return (
           <div>
               <h4>Comments</h4>
               <ul className="list-unstyled">
-                  {comm}
+                  <Stagger in>
+                      {comments.map((comment) => {
+                          return (
+                              <Fade in>
+                                  <li key={comment.id}>
+                                      <p>{comment.comment}</p>
+                                      <p>-- {comment.author}, {new Intl.DateTimeFormat('en-US', {year: 'numeric', month: 'short', day: '2-digit'}).format(new Date(Date.parse(comment.date)))}</p>
+                                  </li>
+                              </Fade>
+                          );
+                      })}
+                  </Stagger>
               </ul>
-              <CommentForm dishId={dishId} addComment={addComment}/>
+              <CommentForm dishId={dishId} postComment={postComment}/>
           </div>
       );
 
@@ -133,13 +137,19 @@ function RenderDish({dish}) {
 
       return (
         <div>
-          <Card>
-            <CardImg width="100%" src={dish.image} alt={dish.name}/>
-            <CardBody>
-              <CardTitle>{dish.name}</CardTitle>
-              <CardText>{dish.description}</CardText>
-            </CardBody>
-          </Card>
+            <FadeTransform
+                in
+                transformProps={{
+                    exitTransform: 'scale(0.5) translateY(-50%)'
+                }}>
+                <Card>
+                    <CardImg width="100%" src={baseUrl + dish.image} alt={dish.name}/>
+                    <CardBody>
+                        <CardTitle>{dish.name}</CardTitle>
+                        <CardText>{dish.description}</CardText>
+                    </CardBody>
+                </Card>
+            </FadeTransform>
         </div>
       );
 
@@ -188,9 +198,11 @@ const DishDetail = (props) => {
             <div className="col-12 col-md-5 m-1">
               <h4>Comments</h4>
               <ul className="list-unstyled">
-                <RenderComments comments={props.comments}
+                <RenderComments
+                    comments={props.comments}
                     addComment={props.addComment}
                     dishId={props.dish.id}
+                    postComment={props.postComment}
                 />
                 <CommentForm/>
               </ul>
