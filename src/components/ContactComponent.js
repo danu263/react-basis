@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import { Breadcrumb, BreadcrumbItem, Button, Form,
-        FormGroup, Label, Input, Col, Row, FormFeedback } from 'reactstrap';
-import { Control, LocalForm, Errors } from 'react-redux-form';
+import { Breadcrumb, BreadcrumbItem, Button,
+         Label, Col, Row } from 'reactstrap';
+import { Control, Form, Errors } from 'react-redux-form';
 import { Link } from 'react-router-dom';
 
 const required = (val) => val && val.length;
@@ -48,9 +48,9 @@ class Contact extends Component {
   }
 
   handleSubmit(values) {
-    console.log('Current state is: '+ JSON.stringify(values));
-    alert('Current state is: ' + JSON.stringify(values));
-    //event.preventDefault();
+      console.log('Current state is: '+ JSON.stringify(values));
+      alert('Current state is: ' + JSON.stringify(values));
+      this.props.resetFeedbackForm();
   }
 
   handleBlur = (field) => (evt) => {
@@ -111,9 +111,9 @@ class Contact extends Component {
                         121, Clear Water Bay Road<br />
                         Clear Water Bay, Kowloon<br />
                         HONG KONG<br />
-                        <i className="fa fa-phone"></i>: +852 1234 5678<br />
-                        <i className="fa fa-fax"></i>: +852 8765 4321<br />
-                        <i className="fa fa-envelope"></i>: <a href="mailto:confusion@food.net">confusion@food.net</a>
+                        <i className="fa fa-phone"/>: +852 1234 5678<br />
+                        <i className="fa fa-fax"/>: +852 8765 4321<br />
+                        <i className="fa fa-envelope"/>: <a href="mailto:confusion@food.net">confusion@food.net</a>
                         </address>
                 </div>
                 <div className="col-12 col-sm-6 offset-sm-1">
@@ -121,9 +121,9 @@ class Contact extends Component {
                 </div>
                 <div className="col-12 col-sm-11 offset-sm-1">
                     <div className="btn-group" role="group">
-                        <a role="button" className="btn btn-primary" href="tel:+85212345678"><i className="fa fa-phone"></i> Call</a>
-                        <a role="button" className="btn btn-info"><i className="fa fa-skype"></i> Skype</a>
-                        <a role="button" className="btn btn-success" href="mailto:confusion@food.net"><i className="fa fa-envelope-o"></i> Email</a>
+                        <a role="button" className="btn btn-primary" href="tel:+85212345678"><i className="fa fa-phone"/> Call</a>
+                        <a role="button" className="btn btn-info"><i className="fa fa-skype"/> Skype</a>
+                        <a role="button" className="btn btn-success" href="mailto:confusion@food.net"><i className="fa fa-envelope-o"/> Email</a>
                     </div>
                 </div>
             </div>
@@ -132,7 +132,7 @@ class Contact extends Component {
                       <h3>Send us your Feedback</h3>
                    </div>
                     <div className="col-12 col-md-9">
-                    <LocalForm onSubmit={(values) => this.handleSubmit(values)}>
+                    <Form model="feedback" onSubmit={(values) => this.handleSubmit(values)}>
                         <Row className="form-group">
                             <Label htmlFor="firstname" md={2}>First Name</Label>
                             <Col md={10}>
@@ -255,7 +255,7 @@ class Contact extends Component {
                                 </Button>
                             </Col>
                         </Row>
-                    </LocalForm>
+                    </Form>
                     </div>
                </div>
         </div>
